@@ -73,6 +73,25 @@ function Get-ProjectsToBuild($settings, $projects, $baseFolder, $token) {
     }
 }
 
+function New-BuildDimensions($projects)
+{
+    $buildDimensions = @()
+    $projects | ForEach-Object {
+        $project = $_
+
+        $projectSettings = ReadSettings -project $project
+        $buildModes = @($projectSettings.buildModes)
+
+        $buildModes | ForEach-Object {
+            $buildMode = $_
+            $buildDimensions += [PSCustomObject] @{
+                project = $project
+                buildMode = $buildMode
+            }
+        }
+    }
+}
+
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version 2.0
 $telemetryScope = $null
@@ -156,21 +175,6 @@ try {
     Add-Content -Path $env:GITHUB_OUTPUT -Value "GitHubRunnerShell=$githubRunnerShell"
     Write-Host "GitHubRunnerShell=$githubRunnerShell"
 
-    # Add only default build mode if not specified in settings
-    if (!$settings.buildModes) {
-        $settings.buildModes = @("Default")
-    }
-
-    if ($settings.buildModes.Count -eq 1) {
-        $buildModes = "[$($settings.buildModes | ConvertTo-Json -compress)]"
-    }
-    else {
-        $buildModes = $settings.buildModes | ConvertTo-Json -compress
-    }
-    
-    Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildModes=$buildModes"
-    Write-Host "BuildModes=$buildModes"
-
     if ($getProjects) {
         Write-Host "Determining projects to build"
         $buildProjects = @()
@@ -206,15 +210,31 @@ try {
         if (Test-Path (Join-Path ".AL-Go" "settings.json") -PathType Leaf) {
             $buildProjects += @(".")
         }
-        if ($buildProjects.Count -eq 1) {
-            $projectsJSon = "[$($buildProjects | ConvertTo-Json -compress)]"
+
+        $buildDimensions = New-BuildDimensions -projects $buildProjects
+        if ($buildDimensions.Count -eq 1) {
+            $buildDimensionsJson = "[$($buildDimensions | ConvertTo-Json -compress)]"
         }
         else {
-            $projectsJSon = $buildProjects | ConvertTo-Json -compress
+            $buildDimensionsJson = $buildDimensions | ConvertTo-Json -compress
         }
+
+        if ($buildProjects.Count -eq 1) {
+            $projectsJson = "[$($buildProjects | ConvertTo-Json -compress)]"
+        }
+        else {
+            $projectsJson = $buildProjects | ConvertTo-Json -compress
+        }
+
+
         Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectsJson=$projectsJson"
         Add-Content -Path $env:GITHUB_ENV -Value "projects=$projectsJson"
         Write-Host "ProjectsJson=$projectsJson"
+
+        Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildDimensions=$buildDimensionsJson"
+        Add-Content -Path $env:GITHUB_ENV -Value "BuildDimensions=$buildDimensionsJson"
+        Write-Host "BuildDimensions=$buildDimensionsJson"
+
         Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectCount=$($buildProjects.Count)"
         Write-Host "ProjectCount=$($buildProjects.Count)"
     }

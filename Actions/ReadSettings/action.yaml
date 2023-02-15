@@ -54,6 +54,9 @@ outputs:
   ProjectsJson:
     description: Projects in compressed Json format
     value: ${{ steps.readsettings.outputs.ProjectsJson }}
+  BuildDimensions:
+    description: An array of [project, buildMode] couple to use as build dimensions
+    value: ${{ steps.readsettings.outputs.BuildDimensions }}
   ProjectCount:
     description: Number of projects in array
     value: ${{ steps.readsettings.outputs.ProjectCount }}
