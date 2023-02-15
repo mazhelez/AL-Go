@@ -43,10 +43,10 @@ try {
     $buildDimensions = New-BuildDimensions -projects $projects -baseFolder $baseFolder
 
     if ($buildDimensions.Count -eq 1) {
-        $buildDimensionsJson = "[$($buildProjects | ConvertTo-Json -compress)]"
+        $buildDimensionsJson = "[$($buildDimensions | ConvertTo-Json -compress)]"
     }
     else {
-        $buildDimensionsJson = $buildProjects | ConvertTo-Json -compress
+        $buildDimensionsJson = $buildDimensions | ConvertTo-Json -compress
     }
 
     Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildDimensions=$buildDimensionsJson"
