@@ -90,6 +90,8 @@ function New-BuildDimensions($projects)
             }
         }
     }
+
+    return $buildDimensions
 }
 
 $ErrorActionPreference = "Stop"
