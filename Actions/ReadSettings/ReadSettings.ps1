@@ -73,27 +73,6 @@ function Get-ProjectsToBuild($settings, $projects, $baseFolder, $token) {
     }
 }
 
-function New-BuildDimensions($projects)
-{
-    $buildDimensions = @()
-    $projects | ForEach-Object {
-        $project = $_
-
-        $projectSettings = ReadSettings -project $project
-        $buildModes = @($projectSettings.buildModes)
-
-        $buildModes | ForEach-Object {
-            $buildMode = $_
-            $buildDimensions += [PSCustomObject] @{
-                project = $project
-                buildMode = $buildMode
-            }
-        }
-    }
-
-    return $buildDimensions
-}
-
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version 2.0
 $telemetryScope = $null
@@ -211,14 +190,6 @@ try {
         Write-Host "Projects to build: $($buildProjects -join ', ')"
         if (Test-Path (Join-Path ".AL-Go" "settings.json") -PathType Leaf) {
             $buildProjects += @(".")
-        }
-
-        $buildDimensions = New-BuildDimensions -projects $buildProjects
-        if ($buildDimensions.Count -eq 1) {
-            $buildDimensionsJson = "[$($buildDimensions | ConvertTo-Json -compress)]"
-        }
-        else {
-            $buildDimensionsJson = $buildDimensions | ConvertTo-Json -compress
         }
 
         if ($buildProjects.Count -eq 1) {
