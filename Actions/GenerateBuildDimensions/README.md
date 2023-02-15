@@ -4,7 +4,7 @@ Every AL-Go projects is paired with all the build modes, supported for that proj
 
 ## Parameters
 ### projects
-An array of AL-Go projects for which to generate the dimentions
+A JSON-formatted string that represents a list of AL-Go projects for which to generate build dimensions
 
 ## Example output
 ```

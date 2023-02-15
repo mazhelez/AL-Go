@@ -1,13 +1,13 @@
 Param(
-    [Parameter(HelpMessage = "A list of AL-Go projects for which to generate build dimensions", Mandatory = $true)]
+    [Parameter(HelpMessage = "A JSON-formatted string that represents a list of AL-Go projects for which to generate build dimensions", Mandatory = $true)]
     $projects
 )
 
 # Creates a list of build dimensions based on the projects settings
 # For each project, it will generate a build dimension for each build mode that is enabled for that project
 function New-BuildDimensions(
-    [Parameter(HelpMessage = "A list of AL-Go projects for which to generate build dimensions", Mandatory = $true)]
-    $projects,
+    [Parameter(HelpMessage = "A list of AL-Go projects for which to generate build dimensions")]
+    $projects = @(),
     $baseFolder = '.'
 )
 {
@@ -36,6 +36,8 @@ try {
     . (Join-Path -Path $PSScriptRoot -ChildPath "..\AL-Go-Helper.ps1" -Resolve)
 
     $baseFolder = $env:GITHUB_WORKSPACE
+
+    $projects = $projects | ConvertFrom-Json
 
     Write-Host "Generating build dimensions for projects: $($projects -join ', ')"
     $buildDimensions = New-BuildDimensions -projects $projects -baseFolder $baseFolder
