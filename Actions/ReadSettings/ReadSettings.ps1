@@ -204,10 +204,6 @@ try {
         Add-Content -Path $env:GITHUB_ENV -Value "projects=$projectsJson"
         Write-Host "ProjectsJson=$projectsJson"
 
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildDimensions=$buildDimensionsJson"
-        Add-Content -Path $env:GITHUB_ENV -Value "BuildDimensions=$buildDimensionsJson"
-        Write-Host "BuildDimensions=$buildDimensionsJson"
-
         Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectCount=$($buildProjects.Count)"
         Write-Host "ProjectCount=$($buildProjects.Count)"
     }

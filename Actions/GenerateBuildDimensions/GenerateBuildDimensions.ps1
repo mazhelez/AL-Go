@@ -37,7 +37,17 @@ try {
 
     $baseFolder = $ENV:GITHUB_WORKSPACE
     $buildDimensions = New-BuildDimensions -projects $projects -baseFolder $baseFolder
-    
+
+    if ($buildDimensions.Count -eq 1) {
+        $buildDimensionsJson = "[$($buildProjects | ConvertTo-Json -compress)]"
+    }
+    else {
+        $buildDimensionsJson = $buildProjects | ConvertTo-Json -compress
+    }
+
+    Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildDimensions=$buildDimensionsJson"
+    Add-Content -Path $env:GITHUB_ENV -Value "BuildDimensions=$buildDimensionsJson"
+    Write-Host "BuildDimensions=$buildDimensionsJson"
 }
 catch {
     OutputError -message "ReadSettings action failed.$([environment]::Newline)Error: $($_.Exception.Message)$([environment]::Newline)Stacktrace: $($_.scriptStackTrace)"
