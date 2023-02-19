@@ -1,0 +1,22 @@
+name: Determine build dimensions
+author: Microsoft Corporation
+inputs:
+  projects:
+    description: An array of AL-Go projects, serealized in JSON format
+    required: true
+outputs:
+  buildDimensions:
+    description: An array of {project, buildMode} couples to use as build dimensions
+    value: ${{ steps.determineBuildDimensions.outputs.buildDimensions }}
+runs:
+  using: composite
+  steps:
+    - name: run
+      shell: ${{ inputs.shell }}
+      id: determineBuildDimensions
+      env:
+        _projects: ${{ inputs.projects }}
+      run: try { ${{ github.action_path }}/DetermineBuildDimensions.ps1 -projects $env:_projects } catch { Write-Host "::Error::Unexpected error when running action ($($_.Exception.Message.Replace("`r",'').Replace("`n",' ')))"; exit 1 }
+branding:
+  icon: terminal
+  color: blue

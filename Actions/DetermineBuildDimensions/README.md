@@ -1,4 +1,4 @@
-# Generate Build Dimensions
+# Determine Build Dimensions
 Creates an array of {project, buildMode} couples to use as build dimensions.
 Every AL-Go projects is paired with all the build modes, supported for that project.
 

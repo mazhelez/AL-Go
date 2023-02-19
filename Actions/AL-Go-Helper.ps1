@@ -87,6 +87,22 @@ function ConvertTo-HashTable() {
     $ht
 }
 
+function ConvertTo-JsonArray() {
+    [CmdletBinding()]
+    Param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true)] 
+        $array
+    )
+    if ($array.Count -eq 1) {
+        $arrayJson = "[$($array | ConvertTo-Json -Compress)]"
+    }
+    else {
+        $arrayJson = $array | ConvertTo-Json -Compress
+    }
+
+    return $arrayJson
+}
+
 function OutputError {
     Param(
         [string] $message

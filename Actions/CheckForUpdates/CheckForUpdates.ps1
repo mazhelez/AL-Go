@@ -253,8 +253,8 @@ try {
                             $addOutput = @()
                             1..$depth | ForEach-Object {
                                 $addOutput += @(
-                                  "projects$($_): `${{ steps.BuildOrder.outputs.projects$($_)Json }}"
-                                  "projects$($_)Count: `${{ steps.BuildOrder.outputs.projects$($_)Count }}"
+                                  "buildDimensions$($_): `${{ steps.BuildOrder.outputs.buildDimensions$($_)Json }}"
+                                  "buildDimensions$($_)Count: `${{ steps.BuildOrder.outputs.buildDimensions$($_)Count }}"
                                 )
                             }
                             $yaml.Replace('jobs:/Initialization:/outputs:/', $initializationOutputs.content + $addOutput)
@@ -269,14 +269,14 @@ try {
                                     # First build job needs to have a dependency on the Initialization job only
                                     # Example (depth 1):
                                     #    needs: [ Initialization ]
-                                    #    if: needs.Initialization.outputs.projects1Count > 0
-                                    $if = "if: (!failure()) && needs.Initialization.outputs.projects$($_)Count > 0"
+                                    #    if: needs.Initialization.outputs.buildDimensions1Count > 0
+                                    $if = "if: (!failure()) && needs.Initialization.outputs.buildDimensions$($_)Count > 0"
                                 }
                                 else {
                                     # Subsequent build jobs needs to have a dependency on all previous build jobs
                                     # Example (depth 2):
                                     #    needs: [ Initialization, Build1 ]
-                                    #    if: always() && (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && needs.Initialization.outputs.projects2Count > 0
+                                    #    if: always() && (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && needs.Initialization.outputs.buildDimensions > 0
                                     # Another example (depth 3):
                                     #    needs: [ Initialization, Build2, Build1 ]
                                     #    if: always() && (!cancelled()) && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && needs.Initialization.outputs.projects3Count > 0
@@ -286,12 +286,12 @@ try {
                                         $needs += @("Build$_")
                                         $ifpart += " && (needs.Build$_.result == 'success' || needs.Build$_.result == 'skipped')"
                                     }
-                                    $if = "if: (!failure()) && (!cancelled())$ifpart && needs.Initialization.outputs.projects$($_)Count > 0"
+                                    $if = "if: (!failure()) && (!cancelled())$ifpart && needs.Initialization.outputs.buildDimensions$($_)Count > 0"
                                 }
                                 # Replace the if:, the needs: and the strategy/matrix/project: in the build job with the correct values
                                 $build.Replace('if:', $if)
                                 $build.Replace('needs:', "needs: [ $($needs -join ', ') ]")
-                                $build.Replace('strategy:/matrix:/project:',"project: `${{ fromJson(needs.Initialization.outputs.projects$($_)) }}")
+                                $build.Replace('strategy:/matrix:/include:',"include: `${{ fromJson(needs.Initialization.outputs.buildDimensions$($_)) }}")
                             
                                 # Last build job is called build, all other build jobs are called build1, build2, etc.
                                 if ($depth -eq $_) {
