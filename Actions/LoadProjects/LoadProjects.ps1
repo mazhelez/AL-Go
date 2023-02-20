@@ -101,7 +101,7 @@ try {
         $buildProjects = @($buildProjects | ForEach-Object { $_; if ($buildAlso.Keys -contains $_) { $buildAlso."$_" } } | Select-Object -Unique)
         
         $projectDependenciesJson = $projectDependencies | ConvertTo-Json -Compress
-        $buildOrderJson = $buildOrder | ConvertTo-Json -Compress
+        $buildOrderJson = $buildOrder | ConvertTo-JsonArray
 
         Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectDependenciesJson=$projectDependenciesJson"
         Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildOrderJson=$buildOrderJson"

@@ -1897,7 +1897,7 @@ Function AnalyzeProjectDependencies {
         $no++
     }
 
-    return $buildOrder
+    return @(, $buildOrder)
 }
 
 function GetBaseFolder {
