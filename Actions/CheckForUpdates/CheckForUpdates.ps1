@@ -259,7 +259,7 @@ try {
                                     # Example (depth 1):
                                     #    needs: [ Initialization ]
                                     #    if: needs.Initialization.outputs.buildDimensions.projectsCount > 0
-                                    $if = "if: (!failure()) && fromJson(needs.Initialization.outputs.fromJson(needs.Initialization.outputs.buildOrderJson)[$($_)].projectsCount > 0"
+                                    $if = "if: (!failure()) && (!cancelled()) && fromJson(needs.Initialization.outputs.fromJson(needs.Initialization.outputs.buildOrderJson)[$($_)].projectsCount > 0"
                                 }
                                 else {
                                     # Subsequent build jobs needs to have a dependency on all previous build jobs
