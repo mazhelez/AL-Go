@@ -1892,12 +1892,40 @@ Function AnalyzeProjectDependencies {
         Write-Host "#$no - build projects: $($thisJob -join ", ")"
         $projects = @($projects | Where-Object { $thisJob -notcontains $_ })
 
-        $buildOrder += @{ 'projects' = $thisJob; 'projectsCount' = $thisJob.Count }
+        $buildDimensions = New-BuildDimensions -projects $thisJob -baseFolder $baseFolder
+
+        $buildOrder += @{ 'buildDimensions' = $buildDimensions ; 'projects' = $thisJob; 'projectsCount' = $thisJob.Count }
 
         $no++
     }
 
     return @(, $buildOrder)
+}
+
+function New-BuildDimensions(
+    [Parameter(HelpMessage = "A list of AL-Go projects for which to generate build dimensions")]
+    $projects = @(),
+    $baseFolder = '.'
+)
+{
+    $buildDimensions = @()
+    
+    $projects | ForEach-Object {
+        $project = $_
+        
+        $projectSettings = ReadSettings -project $project -baseFolder $baseFolder
+        $buildModes = @($projectSettings.buildModes)
+        
+        $buildModes | ForEach-Object {
+            $buildMode = $_
+            $buildDimensions += [PSCustomObject] @{
+                project = $project
+                buildMode = $buildMode
+            }
+        }
+    }
+    
+    return $buildDimensions
 }
 
 function GetBaseFolder {
