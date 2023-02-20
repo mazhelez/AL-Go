@@ -93,7 +93,7 @@ function ConvertTo-JsonArray() {
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)] 
         $array
     )
-    if ($array.Count -eq 1) {
+    if ($array.Count -le 1) {
         $arrayJson = "[$($array | ConvertTo-Json -Compress)]"
     }
     else {
@@ -1893,10 +1893,14 @@ Function AnalyzeProjectDependencies {
         $projects = @($projects | Where-Object { $thisJob -notcontains $_ })
 
         $buildDimensions = New-BuildDimensions -projects $thisJob -baseFolder $baseFolder
-
         $buildOrder += @{ 'buildDimensions' = $buildDimensions ; 'projects' = $thisJob; 'projectsCount' = $thisJob.Count }
 
         $no++
+    }
+
+    if ($buildOrder.Count -eq 0) {
+        # No projects found, return empty build order
+        $buildOrder += @{ 'buildDimensions' = @() ; 'projects' = @() ; 'projectsCount' = 0 }
     }
 
     return @(, $buildOrder)
