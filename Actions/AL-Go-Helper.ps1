@@ -1893,7 +1893,7 @@ Function AnalyzeProjectDependencies {
         $projects = @($projects | Where-Object { $thisJob -notcontains $_ })
 
         $bb = @(, $thisJob) # PS shenaningans to create an array of arrays
-        $buildOrder += $bb
+        $buildOrder += @($bb)
 
         $no++
     }
