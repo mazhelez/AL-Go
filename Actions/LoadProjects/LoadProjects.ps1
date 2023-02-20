@@ -87,12 +87,16 @@ try {
         # Get all projects that have a settings.json file
         $projects = @(Get-ChildItem -Path $baseFolder -Recurse -Depth 2 | Where-Object { $_.PSIsContainer -and (Test-Path (Join-Path $_.FullName ".AL-Go/settings.json") -PathType Leaf) } | ForEach-Object { $_.FullName.Substring($baseFolder.length+1) })
     }
-
+    
     if ($projects) {
         AddTelemetryProperty -telemetryScope $telemetryScope -key "projects" -value "$($projects -join ', ')"
         Write-Host "Found AL-Go Projects: $($projects -join ', ')"
-
+        
         $buildProjects += Get-ProjectsToBuild -settings $settings -projects $projects -baseFolder $baseFolder -token $token
+        # If the repo has a settings.json file, add it to the list of projects to build
+        if (Test-Path (Join-Path ".AL-Go" "settings.json") -PathType Leaf) {
+            $buildProjects += @(".")
+        }
         
         $buildAlso = @{}
         $buildOrder = @()
@@ -102,21 +106,18 @@ try {
         
         $projectDependenciesJson = $projectDependencies | ConvertTo-Json -Compress
         $buildOrderJson = ConvertTo-JsonArray $buildOrder 
-
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectDependenciesJson=$projectDependenciesJson"
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildOrderJson=$buildOrderJson"
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildOrderDepth=$($buildOrder.Count)"
-
-        Write-Host "ProjectDependenciesJson=$projectDependenciesJson"
-        Write-Host "BuildOrderJson=$buildOrderJson"
-        Write-Host "BuildOrderDepth=$($buildOrder.Count)"
     }
+
+    # Set output variables
+    Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectDependenciesJson=$projectDependenciesJson"
+    Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildOrderJson=$buildOrderJson"
+    Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildOrderDepth=$($buildOrder.Count)"
+    
+    Write-Host "ProjectDependenciesJson=$projectDependenciesJson"
+    Write-Host "BuildOrderJson=$buildOrderJson"
+    Write-Host "BuildOrderDepth=$($buildOrder.Count)"
+
     Write-Host "Projects to build: $($buildProjects -join ', ')"
-
-    # If the repo has a settings.json file, add it to the list of projects to build
-    if (Test-Path (Join-Path ".AL-Go" "settings.json") -PathType Leaf) {
-        $buildProjects += @(".")
-    }
 
     # Convert the list of projects to build to a JSON string
     $projectsJson = ConvertTo-JsonArray $buildProjects
