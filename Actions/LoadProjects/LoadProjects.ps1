@@ -95,7 +95,7 @@ try {
         $buildProjects += Get-ProjectsToBuild -settings $settings -projects $projects -baseFolder $baseFolder -token $token
         
         $buildAlso = @{}
-        $buildOrder = @{}
+        $buildOrder = @()
         $projectDependencies = @{}
         AnalyzeProjectDependencies -baseFolder $baseFolder -projects $projects -buildOrder ([ref]$buildOrder) -buildAlso ([ref]$buildAlso) -projectDependencies ([ref]$projectDependencies)
         $buildProjects = @($buildProjects | ForEach-Object { $_; if ($buildAlso.Keys -contains $_) { $buildAlso."$_" } } | Select-Object -Unique)
