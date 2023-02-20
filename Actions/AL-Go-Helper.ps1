@@ -1892,7 +1892,7 @@ Function AnalyzeProjectDependencies {
         Write-Host "#$no - build projects: $($thisJob -join ", ")"
         $projects = @($projects | Where-Object { $thisJob -notcontains $_ })
 
-        $buildOrder += @{ 'projects' = $thisJob; 'count' = $thisJob.Count }
+        $buildOrder += @{ 'projects' = $thisJob; 'projectsCount' = $thisJob.Count }
 
         $no++
     }
