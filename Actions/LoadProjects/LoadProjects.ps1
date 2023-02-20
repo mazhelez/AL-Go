@@ -97,7 +97,7 @@ try {
         $buildAlso = @{}
         $buildOrder = @()
         $projectDependencies = @{}
-        AnalyzeProjectDependencies -baseFolder $baseFolder -projects $projects -buildOrder ([ref]$buildOrder) -buildAlso ([ref]$buildAlso) -projectDependencies ([ref]$projectDependencies)
+        $buildOrder = AnalyzeProjectDependencies -baseFolder $baseFolder -projects $projects -buildAlso ([ref]$buildAlso) -projectDependencies ([ref]$projectDependencies)
         $buildProjects = @($buildProjects | ForEach-Object { $_; if ($buildAlso.Keys -contains $_) { $buildAlso."$_" } } | Select-Object -Unique)
         
         $projectDependenciesJson = $projectDependencies | ConvertTo-Json -Compress

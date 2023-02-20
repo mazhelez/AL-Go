@@ -1788,7 +1788,6 @@ Function AnalyzeProjectDependencies {
     Param(
         [string] $baseFolder,
         [string[]] $projects,
-        [ref] $buildOrder,
         [ref] $buildAlso,
         [ref] $projectDependencies
     )
@@ -1813,7 +1812,7 @@ Function AnalyzeProjectDependencies {
     }
     # AppDependencies is a hashtable with the following structure
     # $appDependencies = @{
-    #     "project1" = @{
+        #     "project1" = @{
     #         "apps" = @("appid1", "appid2")
     #         "dependencies" = @("appid3", "appid4")
     #     }
@@ -1823,6 +1822,7 @@ Function AnalyzeProjectDependencies {
     #     }
     # }
     $no = 1
+    $buildOrder = @()
     Write-Host "Analyzing dependencies"
     while ($projects.Count -gt 0) {
         $thisJob = @()
@@ -1897,6 +1897,8 @@ Function AnalyzeProjectDependencies {
 
         $no++
     }
+
+    return $buildOrder
 }
 
 function GetBaseFolder {
