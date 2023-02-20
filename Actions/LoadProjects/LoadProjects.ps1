@@ -88,6 +88,8 @@ try {
         $projects = @(Get-ChildItem -Path $baseFolder -Recurse -Depth 2 | Where-Object { $_.PSIsContainer -and (Test-Path (Join-Path $_.FullName ".AL-Go/settings.json") -PathType Leaf) } | ForEach-Object { $_.FullName.Substring($baseFolder.length+1) })
     }
     
+    $buildOrder = @()
+
     if ($projects) {
         AddTelemetryProperty -telemetryScope $telemetryScope -key "projects" -value "$($projects -join ', ')"
         Write-Host "Found AL-Go Projects: $($projects -join ', ')"
@@ -99,34 +101,28 @@ try {
         }
         
         $buildAlso = @{}
-        $buildOrder = @()
         $projectDependencies = @{}
         $buildOrder = AnalyzeProjectDependencies -baseFolder $baseFolder -projects $projects -buildAlso ([ref]$buildAlso) -projectDependencies ([ref]$projectDependencies)
+        
         $buildProjects = @($buildProjects | ForEach-Object { $_; if ($buildAlso.Keys -contains $_) { $buildAlso."$_" } } | Select-Object -Unique)
         
-        $projectDependenciesJson = $projectDependencies | ConvertTo-Json -Compress
-        $buildOrderJson = ConvertTo-JsonArray $buildOrder 
     }
-
-    # Set output variables
-    Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectDependenciesJson=$projectDependenciesJson"
-    Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildOrderJson=$buildOrderJson"
-    Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildOrderDepth=$($buildOrder.Count)"
     
+    Write-Host "Projects to build: $($buildProjects -join ', ')"
+    
+    $projectsJson = ConvertTo-JsonArray $buildProjects
+    $projectDependenciesJson = ConvertTo-JsonArray $projectDependencies
+    $buildOrderJson = ConvertTo-JsonArray $buildOrder 
+    
+    # Set output variables
+    Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectsJson=$projectsJson"
+    Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectDependenciesJson=$projectDependenciesJson"
+    Add-Content -Path $env:GITHUB_OUTPUT -Value "BuildOrderJson=$buildOrderJson"    
+    
+    Write-Host "ProjectsJson=$projectsJson"
     Write-Host "ProjectDependenciesJson=$projectDependenciesJson"
     Write-Host "BuildOrderJson=$buildOrderJson"
-    Write-Host "BuildOrderDepth=$($buildOrder.Count)"
 
-    Write-Host "Projects to build: $($buildProjects -join ', ')"
-
-    # Convert the list of projects to build to a JSON string
-    $projectsJson = ConvertTo-JsonArray $buildProjects
-
-    Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectsJson=$projectsJson"
-    Write-Host "ProjectsJson=$projectsJson"
-
-    Add-Content -Path $env:GITHUB_OUTPUT -Value "ProjectCount=$($buildProjects.Count)"
-    Write-Host "ProjectCount=$($buildProjects.Count)"
 }
 catch {
     OutputError -message "LoadProjects action failed.$([environment]::Newline)Error: $($_.Exception.Message)$([environment]::Newline)Stacktrace: $($_.scriptStackTrace)"
