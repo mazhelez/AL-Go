@@ -9,15 +9,9 @@ outputs:
   ProjectsJson:
     description: An array of AL-Go projects in compressed JSON format
     value: ${{ steps.loadProjects.outputs.ProjectsJson }}
-  ProjectCount:
-    description: The number of loaded projects
-    value: ${{ steps.loadProjects.outputs.ProjectCount }}
   BuildOrderJson: 
     description: TODO
     value: ${{ steps.LoadProjects.outputs.BuildOrderJson }}
-  BuildOrderDepth: 
-    description: TODO
-    value: ${{ steps.LoadProjects.outputs.BuildOrderDepth }}
 runs:
   using: composite
   steps:
