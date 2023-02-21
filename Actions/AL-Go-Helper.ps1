@@ -1812,7 +1812,7 @@ Function AnalyzeProjectDependencies {
     }
     # AppDependencies is a hashtable with the following structure
     # $appDependencies = @{
-        #     "project1" = @{
+    #     "project1" = @{
     #         "apps" = @("appid1", "appid2")
     #         "dependencies" = @("appid3", "appid4")
     #     }
