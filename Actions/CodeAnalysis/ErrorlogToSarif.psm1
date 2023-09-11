@@ -7,12 +7,12 @@ function ConvertTo-SarifLog {
     $sarif = Get-SarifLog -Path $Path
 
     if ($OutputPath) {
-        $sarif | ConvertTo-Json -Depth 100 | Out-File $OutputPath -Encoding utf8
+        $sarif | ConvertTo-Json -Depth 100 | Write-Host
+        $sarif | ConvertTo-Json -Depth 100 -Compress | Out-File $OutputPath -Encoding utf8
     }
     else {
         return $sarif
     }
-    
 }
 
 function Get-SarifLog([string] $Path) {
