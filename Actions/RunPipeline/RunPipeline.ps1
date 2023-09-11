@@ -359,6 +359,8 @@ try {
         }
     }
 
+    $errorLog = Join-Path $projectPath "errorLog.json"
+
     Write-Host "Invoke Run-AlPipeline with buildmode $buildMode"
     Run-AlPipeline @runAlPipelineParams `
         -pipelinename $workflowName `
@@ -383,6 +385,7 @@ try {
         -testFolders $settings.testFolders `
         -bcptTestFolders $settings.bcptTestFolders `
         -buildOutputFile $buildOutputFile `
+        -errorLog $errorLog `
         -containerEventLogFile $containerEventLogFile `
         -testResultsFile $testResultsFile `
         -testResultsFormat 'JUnit' `
@@ -409,7 +412,10 @@ try {
         Copy-Item -Path (Join-Path $projectPath "bcptTestResults*.json") -Destination $destFolder
         Copy-Item -Path $buildOutputFile -Destination $destFolder -Force -ErrorAction SilentlyContinue
         Copy-Item -Path $containerEventLogFile -Destination $destFolder -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path $errorLog -Destination $destFolder -Force -ErrorAction SilentlyContinue
     }
+    Copy-Item -Path $errorLog -Destination $buildArtifactFolder -Force -ErrorAction SilentlyContinue
+    
 
     TrackTrace -telemetryScope $telemetryScope
 }
@@ -427,6 +433,7 @@ finally {
             Copy-Item -Path $eventLogFile -Destination $containerEventLogFile
             $destFolder = Join-Path $ENV:GITHUB_WORKSPACE $project
             Copy-Item -Path $containerEventLogFile -Destination $destFolder
+            Copy-Item -Path $errorLog -Destination $destFolder -Force
         }
     }
     catch {
