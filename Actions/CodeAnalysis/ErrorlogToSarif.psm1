@@ -8,7 +8,7 @@ function ConvertTo-SarifLog {
 
     if ($OutputPath) {
         $sarif | ConvertTo-Json -Depth 100 | Write-Host
-        $sarif | ConvertTo-Json -Depth 100 -Compress | Out-File $OutputPath -Encoding utf8
+        $sarif | ConvertTo-Json -Depth 100 -Compress | Out-File $OutputPath -Encoding utf8NoBOM
     }
     else {
         return $sarif
@@ -16,7 +16,7 @@ function ConvertTo-SarifLog {
 }
 
 function Get-SarifLog([string] $Path) {
-    $errorlog = Get-Content $Path | ConvertFrom-Json
+    $errorlog = Get-Content $Path -Raw | ConvertFrom-Json
     $sarifSchema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
     $version = "2.1.0"
     $runs = Get-Runs -ErrorLog $errorlog
@@ -35,7 +35,7 @@ function Get-Runs([object] $ErrorLog) {
     $run = @{
         tool    = @{
             driver = @{
-                name    = "Al-Go Code Analysis"
+                name    = "AL-Go Code Analysis"
                 version = "1.0.0"
                 rules   = @(Get-Rules -ErrorLog $ErrorLog)
             }
