@@ -7,8 +7,6 @@ function ConvertTo-SarifLog {
     $sarif = Get-SarifLog -Path $Path
 
     if ($OutputPath) {
-        $sarif | ConvertTo-Json -Depth 99 | Write-Host
-
         $sarifContent | ConvertTo-Json -Depth 99 -Compress
         $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
         [System.IO.File]::WriteAllLines($OutputPath, $sarifContent, $Utf8NoBomEncoding)
