@@ -11,3 +11,6 @@ $logfiles | ForEach-Object {
     Write-Host "Processing $($_.FullName)"
     ConvertTo-SarifLog -Path $_.FullName -OutputPath $OutputPath
 }
+
+Write-Host "Sarif files created in $OutputPath"
+Get-Content $OutputPath -Raw | Write-Host
