@@ -31,7 +31,7 @@ function PushChanges
     } else {
         # Create PR to base branch
         if (-not (git ls-remote --heads origin $BaseBranch)) {
-            Write-Host "Branch $BaseBranch does not exist in origin. Creating it"
+            Write-Host "Branch $BaseBranch does not exist in origin. Creating it" 
             invoke-git branch $BaseBranch origin/main
             invoke-git push origin $BaseBranch
         }
