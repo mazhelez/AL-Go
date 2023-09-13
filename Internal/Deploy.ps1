@@ -10,9 +10,9 @@ Param(
 
 Import-Module (Join-Path $PSScriptRoot "..\Actions\Github-Helper.psm1" -Resolve) -DisableNameChecking
 
-$errorActionPreference = "Stop"; $ProgressPreference = "SilentlyContinue"; Set-StrictMode -Version 2.0
+$errorActionPreference = "Stop"; $ProgressPreference = "SilentlyContinue"; Set-StrictMode -Version 2.0 
 
-function PushChanges
+function PushChanges 
 (
     [Parameter(HelpMessage = "The branch Al-Go is being deployed to (e.g. main / v.3.2)", Mandatory = $false)]
     [string] $BaseBranch,
@@ -20,7 +20,7 @@ function PushChanges
     [string] $CommitMessage,
     [Parameter(HelpMessage = "If true, the commit will be pushed directly to the base branch. If false, a pull request will be created", Mandatory = $false)]
     [bool] $DirectCommit
-)
+) 
 {
     invoke-git add .
 
