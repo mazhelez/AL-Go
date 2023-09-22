@@ -398,6 +398,7 @@ try {
         -CreateRuntimePackages:$CreateRuntimePackages `
         -appBuild $appBuild -appRevision $appRevision `
         -uninstallRemovedApps
+        -generateErrorLog
 
     if ($containerBaseFolder) {
 
