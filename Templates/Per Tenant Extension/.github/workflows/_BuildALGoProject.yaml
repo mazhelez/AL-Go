@@ -208,7 +208,7 @@ jobs:
         if: (success() || failure())
         with:
           name: ${{ steps.calculateArtifactsNames.outputs.ALCodeAnalysisArtifactsName }}
-          path: '${{ inputs.project }}/.buildartifacts/Apps/'
+          path: '${{ inputs.project }}/.buildartifacts/Apps/*.errorLog.json'
           if-no-files-found: ignore
           retention-days: 1
 
