@@ -116,3 +116,13 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           shell: powershell
+      - name: AL code analysis
+        uses: microsoft/AL-Go-Actions/ALCodeAnalysis@main
+        with:
+          shell: powershell
+          output: results.sarif
+      - name: Upload SARIF results file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: results.sarif
+

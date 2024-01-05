@@ -365,8 +365,8 @@ try {
 
     Write-Host "Invoke Run-AlPipeline with buildmode $buildMode"
     Run-AlPipeline @runAlPipelineParams `
-        -accept_insiderEula `
-        -pipelinename $workflowName `
+    -accept_insiderEula `
+    -pipelinename $workflowName `
         -containerName $containerName `
         -imageName $imageName `
         -bcAuthContext $authContext `
@@ -389,6 +389,7 @@ try {
         -bcptTestFolders $settings.bcptTestFolders `
         -buildOutputFile $buildOutputFile `
         -containerEventLogFile $containerEventLogFile `
+        -generateErrorLog `
         -testResultsFile $testResultsFile `
         -testResultsFormat 'JUnit' `
         -customCodeCops $settings.customCodeCops `

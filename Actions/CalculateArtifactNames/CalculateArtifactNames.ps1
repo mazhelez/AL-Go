@@ -48,6 +48,8 @@ else {
     Set-OutputVariable -name $name -value $value
 }
 
+Set-OutputVariable -name "ALCodeAnalysisArtifactsName" -value "CodeAnalysis_$($projectName)-$($branchName)-$buildMode-$suffix"
+
 # Set this build artifacts name
 'Apps', 'Dependencies', 'TestApps' | ForEach-Object {
     $name = "ThisBuild$($_)ArtifactsName"

@@ -203,6 +203,14 @@ jobs:
           path: '${{ inputs.project }}/.buildartifacts/Apps/'
           if-no-files-found: ignore
 
+      - name: Upload AL code analysis files
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.calculateArtifactsNames.outputs.ALCodeAnalysisArtifactsName }}
+          path: '${{ inputs.project }}/.buildartifacts/Apps/'
+          if-no-files-found: ignore
+          retention-days: 1
+
       - name: Publish artifacts - dependencies
         uses: actions/upload-artifact@v3
         if: inputs.publishArtifacts && env.generateDependencyArtifact == 'True'
