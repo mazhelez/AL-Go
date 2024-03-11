@@ -1,0 +1,22 @@
+name: Child Action
+author: Microsoft Corporation
+description: This is a child action that is called from a parent action
+
+inputs:
+  who:
+    description: The caller of the action
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Say hi
+      shell: powershell
+      env:
+        _who: ${{ inputs.who }}
+      run: |
+        Write-Host "Hello from the Child Action. Called from $($_who)"
+
+branding:
+  icon: terminal
+  color: blue

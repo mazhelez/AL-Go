@@ -1,0 +1,20 @@
+name: 'Say Hi Workflow'
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  SayHi:
+    runs-on: [ windows-latest ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Say Hi
+        uses: microsoft/AL-Go-Actions/ParentAction@main

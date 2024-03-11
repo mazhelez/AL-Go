@@ -1,0 +1,19 @@
+name: Parent Action
+author: Microsoft Corporation
+description: This is a parent action that calls a child action
+
+runs:
+  using: composite
+  steps:
+    - name: Say hi
+      shell: powershell
+      run: |
+        Write-Host "Hello from the Parent Action"
+    - name: Say hi from a child action
+      uses: ./ChildAction
+      with:
+        who: 'Parent Action'
+
+branding:
+  icon: terminal
+  color: blue
