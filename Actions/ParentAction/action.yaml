@@ -13,7 +13,7 @@ runs:
 
     #Call child action from the same repository
     - name: Say hi from a child action
-      uses: ${github.action_path}/../ChildAction@${github.action_ref}
+      uses: ${github.action_repository}/Actions/ChildAction@${github.action_ref}
       with:
         who: 'Parent Action'
 
