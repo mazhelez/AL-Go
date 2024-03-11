@@ -17,9 +17,13 @@ runs:
         Write-Host "Current action repository: ${{ env.actionRepo }}"
         Write-Host "Current action ref: ${{ env.actionRef }}"
 
+        # Add action repo and ref to environment variables
+        Add-Content $env:GITHUB_ENV "ACTION_REPO=${{ env:actionRepo }}"
+        Add-Content $env:GITHUB_ENV "ACTION_REF=${{ env:actionRef }}"
+
     #Call child action from the same repository
     - name: Say hi from a child action
-      uses: ./../../_actions/${{ github.action_repository }}/${{ github.action_ref }}/Actions/ChildAction
+      uses: ./../../_actions/${{ env.ACTION_REPO }}/${{ env.ACTION_REF }}/Actions/ChildAction
       with:
         who: 'Parent Action'
 
