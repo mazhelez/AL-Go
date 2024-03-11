@@ -23,7 +23,7 @@ runs:
 
     #Call child action from the same repository
     - name: Say hi from a child action
-      uses: ./../../_actions/${{ env.ACTION_REPO }}/${{ env.ACTION_REF }}/Actions/ChildAction
+      uses: mazhelez/AL-Go/Actions/ChildAction@${{ env.ACTION_REF }}
       with:
         who: 'Parent Action'
 
