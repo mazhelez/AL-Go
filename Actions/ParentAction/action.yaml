@@ -10,8 +10,8 @@ runs:
       run: |
         Write-Host "Hello from the Parent Action"
         Write-Host "Current action path: ${{ github.action_path }}"
-        Write-Host "Current action repository: ${{ github.action_repository }}"
-        Write-Host "Current action ref: ${{ github.action_ref }}"
+        Write-Host "Current action repository: ${{ env.actionRepo }}"
+        Write-Host "Current action ref: ${{ env.actionRef }}"
 
     - name: Checkout
       uses: actions/checkout@v4
