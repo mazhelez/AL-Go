@@ -21,9 +21,18 @@ runs:
         Add-Content $env:GITHUB_ENV "ACTION_REPO=${{ env.actionRepo }}"
         Add-Content $env:GITHUB_ENV "ACTION_REF=${{ env.actionRef }}"
 
+    #Checkout the action repo
+    - name: Checkout action repository
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ env.ACTION_REPO }}
+        ref: ${{ env.ACTION_REF }}
+        path: './_AL-Go'
+        lfs: true
+
     #Call child action from the same repository
     - name: Say hi from a child action
-      uses: mazhelez/AL-Go/Actions/ChildAction@${{ env.ACTION_REF }}
+      uses: ./_AL-Go/Actions/ChildAction
       with:
         who: 'Parent Action'
 
