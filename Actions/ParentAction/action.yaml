@@ -7,10 +7,15 @@ runs:
   steps:
     - name: Say hi
       shell: powershell
+      env:
+        actionRepo: ${{ github.action_repository }}
+        actionPath: ${{ github.action_path }}
+        actionRef: ${{ github.action_ref }}
       run: |
         Write-Host "Hello from the Parent Action"
-        Write-Host "Current action path: ${{ github.action_path }}"
-        Write-Host "Current action repository: ${{ vars.GITHUB_ACTION_REPOSITORY }}"
+        Write-Host "Current action path: ${{ env.actionPath }}"
+        Write-Host "Current action repository: ${{ env.actionRepo }}"
+        Write-Host "Current action ref: ${{ env.actionRef }}"
 
     #Call child action from the same repository
     - name: Say hi from a child action
