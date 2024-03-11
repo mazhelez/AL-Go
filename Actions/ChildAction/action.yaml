@@ -15,7 +15,7 @@ runs:
       env:
         _who: ${{ inputs.who }}
       run: |
-        Write-Host "Hello from the Child Action. Called from $($_who)"
+        Write-Host "Hello from the Child Action. Called from ${{ env._who }}"
 
 branding:
   icon: terminal
