@@ -18,6 +18,3 @@ jobs:
 
       - name: Say Hi
         uses: microsoft/AL-Go-Actions/ParentAction@main
-        env:
-          actionRepo: ${{ github.action_repository }}
-          actionRef: ${{ github.action_ref }}

@@ -10,20 +10,11 @@ runs:
       run: |
         Write-Host "Hello from the Parent Action"
         Write-Host "Current action path: ${{ github.action_path }}"
-        Write-Host "Current action repository: ${{ env.actionRepo }}"
-        Write-Host "Current action ref: ${{ env.actionRef }}"
-
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        repository: ${{ env.actionRepo }}
-        ref: ${{ env.actionRef }}
-        path: './_AL-Go'
-        lfs: true
+        Write-Host "Current action repository: ${{ vars.GITHUB_ACTION_REPOSITORY }}"
 
     #Call child action from the same repository
     - name: Say hi from a child action
-      uses: ./_AL-Go/Actions/ChildAction
+      uses: ./../../_actions/mazhelez/AL-Go/composite-actions/Actions/ChildAction
       with:
         who: 'Parent Action'
 
