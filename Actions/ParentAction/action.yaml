@@ -5,21 +5,29 @@ description: This is a parent action that calls a child action
 runs:
   using: composite
   steps:
-    - name: Say hi
+    - name: Set action repository and ref
       shell: powershell
       env:
         actionRepo: ${{ github.action_repository }}
-        actionPath: ${{ github.action_path }}
         actionRef: ${{ github.action_ref }}
       run: |
-        Write-Host "Hello from the Parent Action"
-        Write-Host "Current action path: ${{ env.actionPath }}"
-        Write-Host "Current action repository: ${{ env.actionRepo }}"
-        Write-Host "Current action ref: ${{ env.actionRef }}"
+        $actionsRepo = ${{ env.actionRepo }}
+        $actionsRef = ${{ env.actionRef }}
+        Write-Host "Current action repository: $actionsRepo"
+        Write-Host "Current action ref: $actionsRef"
 
-        # Add action repo and ref to environment variables
-        Add-Content $env:GITHUB_ENV "ACTION_REPO=${{ env.actionRepo }}"
-        Add-Content $env:GITHUB_ENV "ACTION_REF=${{ env.actionRef }}"
+        # Set the path where the actions will be checked out
+
+        # Default path is ./_AL-Go/Actions
+        $actionsPath = './_AL-Go/Actions'
+        if ($actionsRepo -like '*/AL-Go') { # direct development
+          # Set the path one level up as that where the Actions folder will be
+          $actionsPath = './_AL-Go'
+        }
+
+        Add-Content $env:GITHUB_ENV "ACTION_REPO=$actionsRepo" -Encoding UTF8
+        Add-Content $env:GITHUB_ENV "ACTION_REF=$actionsRef" -Encoding UTF8
+        Add-Content $env:GITHUB_ENV "ACTIONS_PATH=$actionsPath" -Encoding UTF8
 
     #Checkout the action repo
     - name: Checkout action repository
@@ -27,8 +35,7 @@ runs:
       with:
         repository: ${{ env.ACTION_REPO }}
         ref: ${{ env.ACTION_REF }}
-        path: './_AL-Go'
-        lfs: true
+        path: ${{ env.ACTIONS_PATH }}
 
     #Call child action from the same repository
     - name: Say hi from a child action
