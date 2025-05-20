@@ -104,7 +104,7 @@ jobs:
           shell: ${{ inputs.shell }}
           project: ${{ inputs.project }}
           buildMode: ${{ inputs.buildMode }}
-          get: useCompilerFolder,keyVaultCodesignCertificateName,doNotSignApps,doNotRunTests,doNotRunBcptTests,doNotRunpageScriptingTests,artifact,generateDependencyArtifact,trustedSigning,useGitSubmodules
+          get: useCompilerFolder,keyVaultCodesignCertificateName,doNotSignApps,doNotRunTests,doNotRunBcptTests,doNotRunpageScriptingTests,artifact,generateDependencyArtifact,trustedSigning,useGitSubmodules,featureFlags
 
       - name: Determine whether to build project
         id: DetermineBuildProject
@@ -163,7 +163,7 @@ jobs:
 
       - name: Build
         uses: microsoft/AL-Go-Actions/RunPipeline@main
-        if: steps.DetermineBuildProject.outputs.BuildIt == 'True'
+        if: steps.DetermineBuildProject.outputs.BuildIt == 'True' && env.featureFlags.useNewBuild == 'False'
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
           BuildMode: ${{ inputs.buildMode }}
@@ -176,6 +176,18 @@ jobs:
           installTestAppsJson: ${{ steps.DownloadProjectDependencies.outputs.DownloadedTestApps }}
           baselineWorkflowRunId: ${{ inputs.baselineWorkflowRunId }}
           baselineWorkflowSHA: ${{ inputs.baselineWorkflowSHA }}
+
+      - name: Build
+        uses: microsoft/AL-Go-Actions/BuildALGoProject@main
+        if: steps.DetermineBuildProject.outputs.BuildIt == 'True' && env.featureFlags.useNewBuild == 'True'
+        env:
+          Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
+          BuildMode: ${{ inputs.buildMode }}
+        with:
+          shell: ${{ inputs.shell }}
+          artifact: ${{ env.artifact }}
+          project: ${{ inputs.project }}
+          buildMode: ${{ inputs.buildMode }}
 
       - name: Sign
         id: sign
