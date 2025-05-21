@@ -9,6 +9,8 @@ Param(
     [string] $buildMode = 'Default'
 )
 
+. (Join-Path -Path $PSScriptRoot -ChildPath "..\AL-Go-Helper.ps1" -Resolve)
+
 $settings = $env:Settings | ConvertFrom-Json | ConvertTo-HashTable
 
 Write-Host "::group::Determine apps to build"
