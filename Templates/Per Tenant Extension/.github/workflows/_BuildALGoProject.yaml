@@ -190,9 +190,10 @@ jobs:
           BuildMode: ${{ inputs.buildMode }}
         with:
           shell: ${{ inputs.shell }}
-          artifact: ${{ env.artifact }}
           project: ${{ inputs.project }}
           buildMode: ${{ inputs.buildMode }}
+          baselineWorkflowRunId: ${{ inputs.baselineWorkflowRunId }}
+          baselineWorkflowSHA: ${{ inputs.baselineWorkflowSHA }}
 
       - name: Sign
         id: sign

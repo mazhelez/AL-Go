@@ -1,12 +1,12 @@
 Param(
-    [Parameter(HelpMessage = "The GitHub token running the action", Mandatory = $false)]
-    [string] $token,
-    [Parameter(HelpMessage = "ArtifactUrl to use for the build", Mandatory = $false)]
-    [string] $artifact = "",
     [Parameter(HelpMessage = "AL-Go project folder", Mandatory = $false)]
     [string] $project = "",
     [Parameter(HelpMessage = "Specifies a mode to use for the build steps", Mandatory = $false)]
-    [string] $buildMode = 'Default'
+    [string] $buildMode = 'Default',
+    [Parameter(HelpMessage = "RunId of the baseline workflow run", Mandatory = $false)]
+    [string] $baselineWorkflowRunId = '0',
+    [Parameter(HelpMessage = "SHA of the baseline workflow run", Mandatory = $false)]
+    [string] $baselineWorkflowSHA = ''
 )
 
 . (Join-Path -Path $PSScriptRoot -ChildPath "..\AL-Go-Helper.ps1" -Resolve)
@@ -17,6 +17,7 @@ Write-Host "::group::Determine apps to build"
 Write-Host "::endgroup::"
 
 Write-Host "::group::Create AL development environment"
+. $PSScriptRoot\CreateALDevelopmentEnvironment.ps1
 Write-Host "::endgroup::"
 
 Write-Host "::group::Apps dependency resolution"
