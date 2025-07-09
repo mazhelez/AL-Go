@@ -11,19 +11,18 @@ Param(
 
 . (Join-Path -Path $PSScriptRoot -ChildPath "..\AL-Go-Helper.ps1" -Resolve)
 
-$settings = $env:Settings | ConvertFrom-Json | ConvertTo-HashTable
-
 Write-Host "::group::Determine apps to build"
 Write-Host "::endgroup::"
 
-Write-Host "::group::Create AL development environment"
-. $PSScriptRoot\CreateALDevelopmentEnvironment.ps1
+Write-Host "::group::Setup AL Build Configuration"
+. $PSScriptRoot\SetupALBuildConfiguration.ps1
 Write-Host "::endgroup::"
 
 Write-Host "::group::Apps dependency resolution"
 Write-Host "::endgroup::"
 
 Write-Host "::group::Build apps"
+. $PSScriptRoot\BuildApps.ps1 -Project $project -BuildMode $buildMode
 Write-Host "::endgroup::"
 
 Write-Host "::group::Build test apps"

@@ -182,7 +182,7 @@ jobs:
           baselineWorkflowRunId: ${{ inputs.baselineWorkflowRunId }}
           baselineWorkflowSHA: ${{ inputs.baselineWorkflowSHA }}
 
-      - name: Build
+      - name: Build (NEW)
         uses: microsoft/AL-Go-Actions/BuildALGoProject@main
         if: steps.DetermineBuildProject.outputs.BuildIt == 'True' && fromJson(env.featureFlags).useNewBuild
         env:

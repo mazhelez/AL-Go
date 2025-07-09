@@ -2315,8 +2315,12 @@ Function AnalyzeProjectDependencies {
 
 function GetBaseFolder {
     Param(
-        [string] $folder
+        [string] $folder = '.'
     )
+
+    if($ENV:GITHUB_WORKSPACE) { # If running in GitHub Actions, use the GITHUB_WORKSPACE environment variable
+        return $ENV:GITHUB_WORKSPACE
+    }
 
     Push-Location $folder
     try {
